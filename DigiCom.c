@@ -293,7 +293,6 @@ void receive_uart(volatile ModuleValues_t * vals)
 		
 		if((vals->clutch_enabled == 1) && (strcmp(uart_characters_received, "f") == 0))
 		{
-			vals->uart_debug = 77;
 			//ACTUATOR: go to first gear position 
 			vals->gear_required = GEAR1;
 		}
@@ -318,7 +317,6 @@ void receive_uart(volatile ModuleValues_t * vals)
 		
 		if((vals->clutch_enabled == 0) && (strcmp(uart_characters_received, "setNeutralPos") == 0))
 		{
-			vals->uart_debug = 77;
 			vals->gear_required = NEUTRAL;
 			actuator_save_position(vals->gear_required, vals->gear_status, vals->position_uart_instruction, vals->position_neutral, vals->position_gear_1, vals->position_gear_2);
 		}
@@ -326,20 +324,19 @@ void receive_uart(volatile ModuleValues_t * vals)
 		if((vals->clutch_enabled == 0) && (strcmp(uart_characters_received, "setFirstGearPos") == 0))
 		{
 			vals->gear_required = GEAR1;
-			actuator_save_position(vals->gear_required, vals->gear_status, vals->f32_actuator_feedback, vals->position_neutral, vals->position_gear_1, vals->position_gear_2);
+			actuator_save_position(vals->gear_required, vals->gear_status, vals->position_uart_instruction, vals->position_neutral, vals->position_gear_1, vals->position_gear_2);
 		}
 		
 		if((vals->clutch_enabled == 0) && (strcmp(uart_characters_received, "setSecondGearPos") == 0))
 		{
 			vals->gear_required = GEAR2;
-			actuator_save_position(vals->gear_required, vals->gear_status, vals->f32_actuator_feedback, vals->position_neutral, vals->position_gear_1, vals->position_gear_2);
+			actuator_save_position(vals->gear_required, vals->gear_status, vals->position_uart_instruction, vals->position_neutral, vals->position_gear_1, vals->position_gear_2);
 		}
 		
 		if((vals->clutch_enabled == 0) && ((uart_uint16_received > 0) &&  (uart_uint16_received < 1000)))
 		{
-			vals->gear_required = NEUTRAL;
+			//vals->gear_required = NEUTRAL;
 			vals->position_uart_instruction = uart_uint16_received;
-			//uart_flush();
 		}
 		
 		uart_flush();
@@ -352,6 +349,8 @@ void receive_uart(volatile ModuleValues_t * vals)
 void send_uart(volatile ModuleValues_t vals)
 {
 	printf("\r\n");
+	printf("%i", (int16_t)vals.actuator_in_position);
+	printf(",");
 	printf("%u", vals.gear_required);
 	printf(",");
 	printf("%u",vals.gear_status);
@@ -384,12 +383,12 @@ void send_uart(volatile ModuleValues_t vals)
 	printf(",");
 	printf("%u",vals.position_gear_1);
 	printf(",");
-	//printf("%u",vals.position_gear_2);	
-	//printf(",");
+	printf("%u",vals.position_gear_2);	
+	printf(",");
 	//printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
 	//printf(",");
 	printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
-	//printf(",");
+	printf(",");
 	printf("%i", (int16_t)vals.uart_debug);
 	
 }

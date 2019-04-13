@@ -69,7 +69,7 @@ void actuator_update(volatile ModuleValues_t * vals)
 }
 
 //FUNCTION: saves the actuator/clutch position or S0 value in the micros eeprom memory
-void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_status, float position_feedback, uint16_t position_neutral, uint16_t position_gear_1, uint16_t position_gear_2)
+void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_status, int16_t position_uart_instruction, uint16_t position_neutral, uint16_t position_gear_1, uint16_t position_gear_2)
 {
 	//make sure that "GEAR" is checked before calling function in digicom.c
 	//ASSUMPTION THAT THE ACTUATOR IS NOT MOVING!!! Do we need a function to check if actuator is moving? Check actuator_duty_cycle or Actuator 
@@ -78,20 +78,20 @@ void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_stat
 	switch(gear_required){
 		
 		case NEUTRAL:
-			eeprom_write_word ((uint16_t *)42, (uint16_t) position_feedback);
-			ActuatorComValues.position_neutral = position_feedback;
+			eeprom_write_word ((uint16_t *)42, position_uart_instruction);
+			ActuatorComValues.position_neutral = position_uart_instruction;
 			ActuatorComValues.clutch_state = NEUTRAL;
 		break;
 		
 		case GEAR1:
-			eeprom_write_word ((uint16_t *)46, (uint16_t) position_feedback);
-			ActuatorComValues.position_gear_1 = position_feedback;
+			eeprom_write_word ((uint16_t *)46, position_uart_instruction);
+			ActuatorComValues.position_gear_1 = position_uart_instruction;
 			ActuatorComValues.clutch_state = GEAR1;
 		break;
 		
 		case GEAR2:
-			eeprom_write_word ((uint16_t *)44, (uint16_t) position_feedback);
-			ActuatorComValues.position_gear_2 = position_feedback;
+			eeprom_write_word ((uint16_t *)44, position_uart_instruction);
+			ActuatorComValues.position_gear_2 = position_uart_instruction;
 			ActuatorComValues.clutch_state = GEAR2;
 		break;
 	}
@@ -142,6 +142,7 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 	{
 		actuator_values->actuator_in_position = 1;
 		actuator_values->clutch_state = gear_required;
+		actuator_values->actuator_duty_cycle = 50;
 	} else
 	{
 		actuator_values->actuator_in_position = 0;
@@ -209,9 +210,9 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 	
 		actuator_set_position(&ActuatorComValues, vals->gear_required, vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
 		//UPDATE ComValues
-		vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
-		vals->actuator_direction = ActuatorComValues.actuator_direction;
-		vals->gear_status = ActuatorComValues.clutch_state;
+		//vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
+		//vals->actuator_direction = ActuatorComValues.actuator_direction;
+		//vals->gear_status = ActuatorComValues.clutch_state;
 		//vals->uart_debug = ActuatorComValues.actuator_in_position;
 		
 		if (ActuatorComValues.actuator_in_position)
@@ -223,13 +224,13 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 	{
 		//moving actuator through uart
 		target_position = vals->position_uart_instruction;
-		vals->uart_debug = target_position;
+		//vals->uart_debug = target_position;
 		actuator_set_position(&ActuatorComValues, vals->gear_required,  vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
 		//UPDATE ComValues
-		vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
-		vals->actuator_direction = ActuatorComValues.actuator_direction;
-		vals->gear_status = ActuatorComValues.clutch_state;
-		vals->uart_debug = ActuatorComValues.actuator_in_position;
+		//vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
+		//vals->actuator_direction = ActuatorComValues.actuator_direction;
+		//vals->gear_status = ActuatorComValues.clutch_state;
+		//vals->uart_debug = ActuatorComValues.actuator_in_position;
 	}
 }
 

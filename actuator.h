@@ -47,7 +47,7 @@ typedef struct {
 //FUNCTIONS	
 void actuator_init(volatile ModuleValues_t * vals);
 void actuator_p_controller(volatile ModuleValues_t * vals);
-void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_status, float position_feedback, uint16_t position_neutral, uint16_t position_gear_1, uint16_t position_gear_2);
+void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_status, int16_t position_uart_instruction, uint16_t position_neutral, uint16_t position_gear_1, uint16_t position_gear_2);
 void actuator_pwm(int start);
 void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, ClutchState_t gear_required,  float uart_debug, int16_t actuator_duty_cycle, uint16_t target_position, float f32_actuator_feedback);
 void actuator_update(volatile ModuleValues_t * vals);

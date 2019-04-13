@@ -136,7 +136,7 @@ int main(void)
 	timer0_init_ts();
 	speed_init();
 	spi_init(DIV_4); // clk at clkio/4 = 2MHz init of SPI for external ADC device
-	//actuator_init(&ComValues);
+	actuator_init(&ComValues);
 	
 	//uart_set_FrameFormat(USART_8BIT_DATA|USART_1STOP_BIT|USART_NO_PARITY|USART_ASYNC_MODE); // default settings
 	uart_init(BAUD_CALC(500000)); // 8n1 transmission is set as default

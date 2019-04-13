@@ -84,7 +84,7 @@ typedef struct{
 	float f32_actuator_feedback;
 	uint8_t u8_actuator_duty_cycle;
 	int16_t actuator_position_error;
-	uint16_t position_uart_instruction;
+	int16_t position_uart_instruction;
 	uint16_t position_neutral;
 	uint16_t position_gear_1;
 	uint16_t position_gear_2;
