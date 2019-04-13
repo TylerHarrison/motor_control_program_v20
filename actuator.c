@@ -49,10 +49,11 @@ void actuator_init(volatile ModuleValues_t * vals)
 	ActuatorComValues.clutch_state = vals->gear_status;
 	ActuatorComValues.actuator_direction = vals->actuator_direction;
 	ActuatorComValues.actuator_duty_cycle = vals->u8_actuator_duty_cycle; 
-	
 	ActuatorComValues.position_neutral = vals->position_neutral;
 	ActuatorComValues.position_gear_1 = vals->position_gear_1;
 	ActuatorComValues.position_gear_2 = vals->position_gear_2;
+	
+	//actuator_pwm(int enable);
 	
 }
 
@@ -74,8 +75,7 @@ void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_stat
 {
 	//make sure that "GEAR" is checked before calling function in digicom.c
 	//ASSUMPTION THAT THE ACTUATOR IS NOT MOVING!!! Do we need a function to check if actuator is moving? Check actuator_duty_cycle or Actuator 
-	
-	//must change the local structure and then update, function does not change ComValues 
+
 	switch(gear_required){
 		
 		case NEUTRAL:
@@ -104,11 +104,16 @@ void actuator_pwm(int enable)
 	//cannot "unlock" actuators in motor_control_v2.0 as inverter is contineously on and will invert a logic low and drive the actuator in one direction.
 	if(enable){
 		//PWM: turn pwm ON: enable 3V3 reg
-		TCCR3C = 1;
+		//TCCR3C = 1;
 		PORTE |= (1<<PE5);	
+		
+		//turn PF3 ON to enable 3V3 
+		//DDRF |= (1<<PF3);
+		//PORTF |= (1<<PF3);
+	
 	}else{
 		//PWM: turn pwm OFF: disable 3V3 reg
-		TCCR3C = 0;
+		//TCCR3C = 0;
 		PORTE &= ~(1<<PE5);	
 	}
 }
@@ -210,11 +215,6 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 		}
 	
 		actuator_set_position(&ActuatorComValues, vals->gear_required, vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
-		//UPDATE ComValues
-		//vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
-		//vals->actuator_direction = ActuatorComValues.actuator_direction;
-		//vals->gear_status = ActuatorComValues.clutch_state;
-		//vals->uart_debug = ActuatorComValues.actuator_in_position;
 		
 		if (ActuatorComValues.actuator_in_position)
 		{
@@ -225,13 +225,8 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 	{
 		//moving actuator through uart
 		target_position = vals->position_uart_instruction;
-		//vals->uart_debug = target_position;
 		actuator_set_position(&ActuatorComValues, vals->gear_required,  vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
-		//UPDATE ComValues
-		//vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
-		//vals->actuator_direction = ActuatorComValues.actuator_direction;
-		//vals->gear_status = ActuatorComValues.clutch_state;
-		//vals->uart_debug = ActuatorComValues.actuator_in_position;
+
 	}
 }
 
