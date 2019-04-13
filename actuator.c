@@ -20,7 +20,7 @@
 #include <avr/eeprom.h>
 #include "actuator.h"
 
-#define POSITION_TOLERANCE	10
+#define POSITION_TOLERANCE	5
 #define KP 0.7
 #define DUTY_CYCLE_50_PERCENT 66.5
 
@@ -137,7 +137,7 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 			3) actuator_duty_cycle
 			4) gear_status
 */
-	float kp = 0.7; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value 
+	float kp = 5; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value 
 	int16_t position_error = ((int16_t)target_position - (int16_t)f32_actuator_feedback);
 	int16_t new_duty_cycle = 0;
 	new_duty_cycle = kp*position_error + 66.5;
@@ -173,7 +173,6 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 		break;
 	}
 	
-	
 	if(new_duty_cycle > 130)
 	{
 		new_duty_cycle = 130;
@@ -187,6 +186,11 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 	
 	actuator_values->actuator_duty_cycle = new_duty_cycle;
 	actuator_values->actuator_position_error = position_error;
+	
+	//if (ActuatorComValues.actuator_in_position == 0)
+	//{
+	// VERY VERY INTERESTING IF DUTY CYCLE IS LOCKED IN THIS CODE THEN WE USE LESS POWER BUT WE HAVE A SYSTEM ISSOLATION 
+	//}
 }
 
 void actuator_p_controller(volatile ModuleValues_t * vals)
