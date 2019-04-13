@@ -28,10 +28,13 @@
 //Variable description & structures
 volatile ActuatorModuleValues_t ActuatorComValues = {
 	.clutch_state = 0,
-	.actuator_direction = NEUTRAL, 
+	.actuator_direction = STATIONARY, 
 	.actuator_in_position = 0,
 	.actuator_position_error = 0,
-	.actuator_duty_cycle = 0
+	.actuator_duty_cycle = 0,
+	.position_neutral = 0,
+	.position_gear_1 = 0,
+	.position_gear_2 = 0
 };
 
 //FUNCTION: ACTUATOR: Set saved actuator positions
@@ -48,8 +51,21 @@ void actuator_init(volatile ModuleValues_t * vals)
 	ActuatorComValues.actuator_duty_cycle = vals->u8_actuator_duty_cycle; 
 	
 	//Initalise ComValues
+	//vals->actuator_in_position = ActuatorComValues.actuator_in_position;
+	//vals->actuator_position_error = ActuatorComValues.actuator_position_error;
+}
+
+void actuator_update(volatile ModuleValues_t * vals)
+{
+	//Update ComValues in the main program with the local structure ActuatorModuleValues_t
+	vals->gear_status = ActuatorComValues.clutch_state;
+	vals->actuator_direction = ActuatorComValues.actuator_direction;
 	vals->actuator_in_position = ActuatorComValues.actuator_in_position;
 	vals->actuator_position_error = ActuatorComValues.actuator_position_error;
+	vals->u8_actuator_duty_cycle = ActuatorComValues.actuator_duty_cycle;
+	vals->position_neutral = ActuatorComValues.position_neutral;
+	vals->position_gear_1 = ActuatorComValues.position_gear_1;
+	vals->position_gear_2 = ActuatorComValues.position_gear_2;
 }
 
 //FUNCTION: saves the actuator/clutch position or S0 value in the micros eeprom memory
@@ -57,24 +73,26 @@ void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_stat
 {
 	//make sure that "GEAR" is checked before calling function in digicom.c
 	//ASSUMPTION THAT THE ACTUATOR IS NOT MOVING!!! Do we need a function to check if actuator is moving? Check actuator_duty_cycle or Actuator 
+	
+	//must change the local structure and then update, function does not change ComValues 
 	switch(gear_required){
 		
 		case NEUTRAL:
 			eeprom_write_word ((uint16_t *)42, (uint16_t) position_feedback);
-			position_neutral = position_feedback;
-			gear_status = NEUTRAL;
+			ActuatorComValues.position_neutral = position_feedback;
+			ActuatorComValues.clutch_state = NEUTRAL;
 		break;
 		
 		case GEAR1:
 			eeprom_write_word ((uint16_t *)46, (uint16_t) position_feedback);
-			position_gear_1 = position_feedback;
-			gear_status = GEAR1;
+			ActuatorComValues.position_gear_1 = position_feedback;
+			ActuatorComValues.clutch_state = GEAR1;
 		break;
 		
 		case GEAR2:
 			eeprom_write_word ((uint16_t *)44, (uint16_t) position_feedback);
-			position_gear_2 = position_feedback;
-			gear_status = GEAR1;
+			ActuatorComValues.position_gear_2 = position_feedback;
+			ActuatorComValues.clutch_state = GEAR2;
 		break;
 	}
 }

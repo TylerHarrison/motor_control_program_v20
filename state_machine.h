@@ -17,9 +17,9 @@
 //CLUTCH & ACTUATOR
 
 typedef enum {
-	STATIONARY,
-	EXTEND,
-	RETRACT
+	STATIONARY = 0,
+	EXTEND = 1,
+	RETRACT = 2
 } ActuatorDirection;
 
 typedef enum

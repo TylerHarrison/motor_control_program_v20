@@ -181,7 +181,8 @@ int main(void)
 ISR(TIMER0_COMP_vect){ // every 5ms
 	handle_DWC(&ComValues); // sets accel and brake cmds to 0 when shell's telemetry system is triggered
 	state_handler(&ComValues); // manages the state machine
-	actuator_p_controller(&ComValues);// manages the actuator's state machine for clutch position 
+	actuator_p_controller(&ComValues); // manages the actuator's state machine for clutch position 
+	actuator_update(&ComValues); //Update information from local actuator structure to main program 
 	
 	//UART TIMER: MUST MAKE CODE TO DISABLE UART COMS AFTER CERTAIN NUMBER OF TIME?
 	
