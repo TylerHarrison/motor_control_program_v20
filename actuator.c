@@ -50,9 +50,10 @@ void actuator_init(volatile ModuleValues_t * vals)
 	ActuatorComValues.actuator_direction = vals->actuator_direction;
 	ActuatorComValues.actuator_duty_cycle = vals->u8_actuator_duty_cycle; 
 	
-	//Initalise ComValues
-	//vals->actuator_in_position = ActuatorComValues.actuator_in_position;
-	//vals->actuator_position_error = ActuatorComValues.actuator_position_error;
+	ActuatorComValues.position_neutral = vals->position_neutral;
+	ActuatorComValues.position_gear_1 = vals->position_gear_1;
+	ActuatorComValues.position_gear_2 = vals->position_gear_2;
+	
 }
 
 void actuator_update(volatile ModuleValues_t * vals)

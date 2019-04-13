@@ -34,6 +34,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdlib.h>
+#include <avr/eeprom.h>
 #include "speed.h"
 #include "sensors.h"
 #include "controller.h"
