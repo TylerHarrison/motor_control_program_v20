@@ -137,18 +137,17 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 			3) actuator_duty_cycle
 			4) gear_status
 */
-	float kp = 5; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value 
+
+	float kp = 3.8; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value
 	int16_t position_error = ((int16_t)target_position - (int16_t)f32_actuator_feedback);
 	int16_t new_duty_cycle = 0;
 	new_duty_cycle = kp*position_error + 66.5;
-	
-	//Is the actuator with in an acceptable error
 	
 	if (actuator_position_tolerance(position_error)) 
 	{
 		actuator_values->actuator_in_position = 1;
 		actuator_values->clutch_state = gear_required;
-		actuator_values->actuator_duty_cycle = 50;
+		//new_duty_cycle = 50;
 	} else
 	{
 		actuator_values->actuator_in_position = 0;
@@ -186,11 +185,6 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 	
 	actuator_values->actuator_duty_cycle = new_duty_cycle;
 	actuator_values->actuator_position_error = position_error;
-	
-	//if (ActuatorComValues.actuator_in_position == 0)
-	//{
-	// VERY VERY INTERESTING IF DUTY CYCLE IS LOCKED IN THIS CODE THEN WE USE LESS POWER BUT WE HAVE A SYSTEM ISSOLATION 
-	//}
 }
 
 void actuator_p_controller(volatile ModuleValues_t * vals)
