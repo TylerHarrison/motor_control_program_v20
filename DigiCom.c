@@ -389,7 +389,7 @@ void send_uart(volatile ModuleValues_t vals)
 	//printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
 	//printf(",");
 	printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
-	//printf(",");
+	printf(",");
 	printf("%i", (int16_t)vals.uart_debug);
 	
 }
