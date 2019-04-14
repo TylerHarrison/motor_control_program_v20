@@ -11,20 +11,6 @@
 
 #ifndef ACTUATOR_H_
 #define ACTUATOR_H_
-/*
-typedef enum {
-	EXTEND,
-	RETRACT,
-	STATIONARY
-} ActuatorDirection;
-
-typedef enum
-{
-	NEUTRAL = 0,
-	GEAR1 = 1,
-	GEAR2 = 2 //on belt drive
-} ClutchState_t ;
-*/
 
 typedef enum {
 	EEPROM_GEAR_1 = 46,

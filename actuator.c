@@ -21,8 +21,8 @@
 #include "actuator.h"
 
 #define POSITION_TOLERANCE	5
-#define KP 0.7
-#define DUTY_CYCLE_50_PERCENT 66.5
+#define KP 3.8
+#define HALF_DUTY_CYCLE 66.5
 
 
 //Variable description & structures
@@ -41,9 +41,9 @@ volatile ActuatorModuleValues_t ActuatorComValues = {
 void actuator_init(volatile ModuleValues_t * vals)
 {
 	//set actuator positions
-	vals->position_neutral = eeprom_read_word((uint16_t*)42);
-	vals->position_gear_1 = eeprom_read_word((uint16_t*)46);
-	vals->position_gear_2 = eeprom_read_word((uint16_t*)44);
+	vals->position_neutral = eeprom_read_word((uint16_t*)EEPROM_NEUTRAL);
+	vals->position_gear_1 = eeprom_read_word((uint16_t*)EEPROM_GEAR_1);
+	vals->position_gear_2 = eeprom_read_word((uint16_t*)EEPROM_GEAR_2);
 	
 	//Initialise Actuator variables 
 	ActuatorComValues.clutch_state = vals->gear_status;
@@ -53,8 +53,8 @@ void actuator_init(volatile ModuleValues_t * vals)
 	ActuatorComValues.position_gear_1 = vals->position_gear_1;
 	ActuatorComValues.position_gear_2 = vals->position_gear_2;
 	
+	//ACTUATOR: set/lock the actuator, start PWM signal and enable PCB signal inverter with 3V3
 	//actuator_pwm(int enable);
-	
 }
 
 void actuator_update(volatile ModuleValues_t * vals)
@@ -79,19 +79,19 @@ void actuator_save_position(ClutchState_t gear_required, ClutchState_t gear_stat
 	switch(gear_required){
 		
 		case NEUTRAL:
-			eeprom_write_word ((uint16_t *)42, position_uart_instruction);
+			eeprom_write_word ((uint16_t *)EEPROM_NEUTRAL, position_uart_instruction);
 			ActuatorComValues.position_neutral = position_uart_instruction;
 			ActuatorComValues.clutch_state = NEUTRAL;
 		break;
 		
 		case GEAR1:
-			eeprom_write_word ((uint16_t *)46, position_uart_instruction);
+			eeprom_write_word ((uint16_t *)EEPROM_GEAR_1, position_uart_instruction);
 			ActuatorComValues.position_gear_1 = position_uart_instruction;
 			ActuatorComValues.clutch_state = GEAR1;
 		break;
 		
 		case GEAR2:
-			eeprom_write_word ((uint16_t *)44, position_uart_instruction);
+			eeprom_write_word ((uint16_t *)EEPROM_GEAR_2, position_uart_instruction);
 			ActuatorComValues.position_gear_2 = position_uart_instruction;
 			ActuatorComValues.clutch_state = GEAR2;
 		break;
@@ -138,10 +138,10 @@ void actuator_set_position(volatile ActuatorModuleValues_t *actuator_values, Clu
 			4) gear_status
 */
 
-	float kp = 3.8; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value
+	//float kp = 3.8; //ATTENTION: Change kp to produce a bigger duty cycle for a given error value
 	int16_t position_error = ((int16_t)target_position - (int16_t)f32_actuator_feedback);
 	int16_t new_duty_cycle = 0;
-	new_duty_cycle = kp*position_error + 66.5;
+	new_duty_cycle = (float)KP*position_error + (float)HALF_DUTY_CYCLE;
 	
 	if (actuator_position_tolerance(position_error)) 
 	{
@@ -196,7 +196,6 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 	if(vals->clutch_enabled)
 	{
 		//ACTUATOR: set actuator position based off current state
-		//ATTENTION: maybe make the gear_required as the switch case and then change to gear_status 
 		switch(vals->gear_required)
 		{
 			case NEUTRAL:
@@ -214,14 +213,9 @@ void actuator_p_controller(volatile ModuleValues_t * vals)
 	
 		actuator_set_position(&ActuatorComValues, vals->gear_required, vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
 		
-		if (ActuatorComValues.actuator_in_position)
-		{
-			vals->gear_status = ActuatorComValues.clutch_state;
-		}
-		
 	}else
 	{
-		//moving actuator through uart
+		//move with uart instruction
 		target_position = vals->position_uart_instruction;
 		actuator_set_position(&ActuatorComValues, vals->gear_required,  vals->uart_debug, vals->u8_actuator_duty_cycle, target_position, vals->f32_actuator_feedback);
 
