@@ -33,11 +33,9 @@ void handle_current_sensor(volatile float *f32_current, uint16_t u16_ADC_reg, ui
 	volatile float f_new_current = ((volatile float)u16_ADC_reg*5.0/4096.0)*8 - 20;
 	if (u8_sensor_num)
 	{//batt
-		//f_new_current = (f_new_current+CORRECTION_OFFSET_BAT);// correction of offset
-		f_new_current = (f_new_current + (float)0.3);
+		f_new_current = (f_new_current+CORRECTION_OFFSET_BAT);// correction of offset
 	}else{
-		//f_new_current = (f_new_current+CORRECTION_OFFSET_MOT);// correction of offset
-		f_new_current = (f_new_current + (float)0.3);
+		f_new_current = (f_new_current+CORRECTION_OFFSET_MOT);// correction of offset
 	}
 	*f32_current = f_new_current;
 	

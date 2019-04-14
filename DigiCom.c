@@ -56,7 +56,7 @@ void SPI_handler_0(volatile float * f32_batt_volt) // motor current ***CH0 - S_B
 	u8_rxBuffer[1]&= ~(0b111<<5);
 	u16_ADC0_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
 	
-	*f32_batt_volt = VOLT_CONVERSION_OFFSET+(((float)u16_ADC0_reg/VOLT_CONVERSION_COEFF)*10 - 17);
+	*f32_batt_volt = VOLT_CONVERSION_OFFSET+(((float)u16_ADC0_reg/VOLT_CONVERSION_COEFF)*10 - (float)CORRECTION_OFFSET_BAT_VOLTAGE);
 }
 
 void SPI_handler_1(volatile float * f32_batt_current) // battery current ***CH1 - S_B_I, BATTERY CURRENT

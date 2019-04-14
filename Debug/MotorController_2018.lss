@@ -1064,7 +1064,7 @@ void SPI_handler_0(volatile float * f32_batt_volt) // motor current ***CH0 - S_B
      6e0:	61 83       	std	Z+1, r22	; 0x01
 	u16_ADC0_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
 	
-	*f32_batt_volt = VOLT_CONVERSION_OFFSET+(((float)u16_ADC0_reg/VOLT_CONVERSION_COEFF)*10 - 17);
+	*f32_batt_volt = VOLT_CONVERSION_OFFSET+(((float)u16_ADC0_reg/VOLT_CONVERSION_COEFF)*10 - (float)CORRECTION_OFFSET_BAT_VOLTAGE);
      6e2:	70 e0       	ldi	r23, 0x00	; 0
      6e4:	76 2f       	mov	r23, r22
      6e6:	66 27       	eor	r22, r22
@@ -4341,8 +4341,7 @@ void handle_current_sensor(volatile float *f32_current, uint16_t u16_ADC_reg, ui
     1a96:	ff 20       	and	r15, r15
     1a98:	71 f0       	breq	.+28     	; 0x1ab6 <handle_current_sensor+0x6c>
 	{//batt
-		//f_new_current = (f_new_current+CORRECTION_OFFSET_BAT);// correction of offset
-		f_new_current = (f_new_current + (float)0.3);
+		f_new_current = (f_new_current+CORRECTION_OFFSET_BAT);// correction of offset
     1a9a:	69 81       	ldd	r22, Y+1	; 0x01
     1a9c:	7a 81       	ldd	r23, Y+2	; 0x02
     1a9e:	8b 81       	ldd	r24, Y+3	; 0x03
@@ -4358,8 +4357,7 @@ void handle_current_sensor(volatile float *f32_current, uint16_t u16_ADC_reg, ui
     1ab2:	9c 83       	std	Y+4, r25	; 0x04
     1ab4:	0d c0       	rjmp	.+26     	; 0x1ad0 <handle_current_sensor+0x86>
 	}else{
-		//f_new_current = (f_new_current+CORRECTION_OFFSET_MOT);// correction of offset
-		f_new_current = (f_new_current + (float)0.3);
+		f_new_current = (f_new_current+CORRECTION_OFFSET_MOT);// correction of offset
     1ab6:	69 81       	ldd	r22, Y+1	; 0x01
     1ab8:	7a 81       	ldd	r23, Y+2	; 0x02
     1aba:	8b 81       	ldd	r24, Y+3	; 0x03
