@@ -27,7 +27,7 @@ typedef struct {
 	uint16_t position_neutral;
 	uint16_t position_gear_1;
 	uint16_t position_gear_2;
-	//PowertrainType_t power_train_type;
+	PowertrainType_t power_train_type;
 	
 } ActuatorModuleValues_t;
 

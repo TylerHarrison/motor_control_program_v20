@@ -77,6 +77,12 @@ void SPI_handler_2(volatile float * f32_batvolt) //battery voltage ***CH2 - S_M_
 	u16_ADC2_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
 	//ATTENTION - IMPLEMENT CONVERSION HERE
 	
+	if (u16_ADC2_reg > SWITCH_THRESHOLD)
+	{
+		//power train typle = BELT
+	}
+	
+	
 }
 
 void SPI_handler_3(volatile float * p_f32_motcurrent) // motor current ***CH3 - S_M_GEAR, Power Train Type Selection 

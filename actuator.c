@@ -34,7 +34,8 @@ volatile ActuatorModuleValues_t ActuatorComValues = {
 	.actuator_duty_cycle = 0,
 	.position_neutral = 0,
 	.position_gear_1 = 0,
-	.position_gear_2 = 0
+	.position_gear_2 = 0,
+	.power_train_type = BELT
 };
 
 //FUNCTION: ACTUATOR: Set saved actuator positions
@@ -52,6 +53,7 @@ void actuator_init(volatile ModuleValues_t * vals)
 	ActuatorComValues.position_neutral = vals->position_neutral;
 	ActuatorComValues.position_gear_1 = vals->position_gear_1;
 	ActuatorComValues.position_gear_2 = vals->position_gear_2;
+	ActuatorComValues.power_train_type = vals->pwtrain_type;
 	
 	//ACTUATOR: set/lock the actuator, start PWM signal and enable PCB signal inverter with 3V3
 	//actuator_pwm(int enable);
@@ -59,6 +61,9 @@ void actuator_init(volatile ModuleValues_t * vals)
 
 void actuator_update(volatile ModuleValues_t * vals)
 {
+	//Check what power train is selected
+	
+	
 	//Update ComValues in the main program with the local structure ActuatorModuleValues_t
 	vals->gear_status = ActuatorComValues.clutch_state;
 	vals->actuator_direction = ActuatorComValues.actuator_direction;
@@ -68,6 +73,7 @@ void actuator_update(volatile ModuleValues_t * vals)
 	vals->position_neutral = ActuatorComValues.position_neutral;
 	vals->position_gear_1 = ActuatorComValues.position_gear_1;
 	vals->position_gear_2 = ActuatorComValues.position_gear_2;
+	vals->pwtrain_type = ActuatorComValues.power_train_type;
 }
 
 //FUNCTION: saves the actuator/clutch position or S0 value in the micros eeprom memory
