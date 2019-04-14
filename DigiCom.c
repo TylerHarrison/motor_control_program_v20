@@ -349,12 +349,12 @@ void receive_uart(volatile ModuleValues_t * vals)
 void send_uart(volatile ModuleValues_t vals)
 {
 	printf("\r\n");
-	printf("%i", (int16_t)vals.actuator_in_position);
-	printf(",");
-	printf("%u", vals.gear_required);
-	printf(",");
-	printf("%u",vals.gear_status);
-	printf(",");
+	//printf("%i", (int16_t)vals.actuator_in_position);
+	//printf(",");
+	//printf("%u", vals.gear_required);
+	//printf(",");
+	//printf("%u",vals.gear_status);
+	//printf(",");
 	printf("%u", vals.motor_status);
 	printf(",");
 	printf("%u",vals.message_mode);
@@ -367,29 +367,29 @@ void send_uart(volatile ModuleValues_t vals)
 	//printf(",");
 	printf("%i",(int16_t)(vals.f32_batt_volt));
 	printf(",");
-	//printf("%i",(int16_t)(vals.f32_motor_current));
-	//printf(","); 
-	//printf("%i",(int16_t)(vals.f32_batt_current*1000));
-	//printf(",");
+	printf("%i",(int16_t)(vals.f32_motor_current*1000));
+	printf(","); 
+	printf("%i",(int16_t)(vals.f32_batt_current*1000));
+	printf(",");
 	printf("%i",(int16_t)(vals.f32_actuator_feedback));
 	printf(",");
 	//printf("%u",vals.position_uart_instruction);
 	//printf(",");
 	printf("%i",vals.motor_enabled);
 	printf(",");
-	printf("%i",vals.clutch_enabled);
-	printf(",");
-	printf("%u",vals.position_neutral);
-	printf(",");
-	printf("%u",vals.position_gear_1);
-	printf(",");
-	printf("%u",vals.position_gear_2);	
-	printf(",");
+	//printf("%i",vals.clutch_enabled);
+	//printf(",");
+	//printf("%u",vals.position_neutral);
+	//printf(",");
+	//printf("%u",vals.position_gear_1);
+	//printf(",");
+	//printf("%u",vals.position_gear_2);	
+	//printf(",");
 	//printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
 	//printf(",");
-	printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
-	printf(",");
-	printf("%i", (int16_t)vals.uart_debug);
+	//printf("%i", (int16_t)vals.u8_actuator_duty_cycle);
+	//printf(",");
+	//printf("%i", (int16_t)vals.uart_debug);
 	
 }
 
