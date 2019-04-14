@@ -69,24 +69,24 @@ void SPI_handler_1(volatile float * f32_batt_current) // battery current ***CH1 
 	handle_current_sensor(f32_batt_current, u16_ADC1_reg, 1);
 }
 /*
-void SPI_handler_2(volatile float * f32_batvolt) //battery voltage ***CH2 - X, N/C
+void SPI_handler_2(volatile float * f32_batvolt) //battery voltage ***CH2 - S_M_BELT, Power Train Type Selection 
 {
 	Set_ADC_Channel_ext(2, u8_txBuffer);
 	spi_trancieve(u8_txBuffer, u8_rxBuffer, 3, 1);
 	u8_rxBuffer[1]&= ~(0b111<<5);
 	u16_ADC2_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
-	
+	//ATTENTION - IMPLEMENT CONVERSION HERE
 	
 }
 
-void SPI_handler_3(volatile float * p_f32_motcurrent) // motor current ***CH3 - X, N/C
+void SPI_handler_3(volatile float * p_f32_motcurrent) // motor current ***CH3 - S_M_GEAR, Power Train Type Selection 
 {
-	Set_ADC_Channel_ext(0, u8_txBuffer);
+	Set_ADC_Channel_ext(3, u8_txBuffer);
 	spi_trancieve(u8_txBuffer, u8_rxBuffer, 3, 1);
 	u8_rxBuffer[1]&= ~(0b111<<5);
-	u16_ADC0_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
+	u16_ADC3_reg = (u8_rxBuffer[1] << 8 ) | u8_rxBuffer[2];
 	//ATTENTION - IMPLEMENT CONVERSION HERE
-	//handle_current_sensor(p_f32_motcurrent, u16_ADC0_reg,0);
+	
 }
 */
 void SPI_handler_4(volatile uint8_t * u8_motor_temp) //motor temperature ***CH4 - S_M_T, MOTOR TEMPERATURE
